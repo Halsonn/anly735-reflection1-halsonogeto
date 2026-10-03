@@ -1,7 +1,9 @@
 ---
 ---
-title: "PAIR Scholarly Reflection: Unveiling Sources of Predictive Uncertainty"
-format: html
+title: "PAIR Scholarly Reflection: Unveil Sources of Uncertainty: Feature Contribution to Conformal
+Prediction Interval"
+author: "Halson Ogeto Nyaberi"
+date: today
 ---
 
 # Position
