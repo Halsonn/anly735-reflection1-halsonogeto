@@ -41,7 +41,7 @@ To address feature entanglement without combinatorial retraining, future work sh
 
 # References
 
-Il Idrissi, M., Fernandes Machado, A., Gallic, E., & Charpentier, A. (2025). Unveil sources of uncertainty: Feature contribution to conformal prediction intervals. arXiv preprint arXiv:2505.13118v1.
+Idrissi, M. I., Machado, A. F., Gallic, E., & Charpentier, A. (2025). Unveil sources of uncertainty: Feature contribution to conformal prediction intervals. arXiv preprint arXiv:2505.13118.
 
 Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems, 30, 4765–4774.
 
