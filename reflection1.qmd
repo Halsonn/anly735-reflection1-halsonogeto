@@ -13,7 +13,7 @@ By expanding attribution beyond egalitarian Shapley values to the broader Harsan
 
 # Analyze
 
-The authors evaluate their framework across synthetic benchmarks (Sobol-Levitan, modified Friedman) and seven diverse real-world benchmarks (e.g., bike, casp, facebook, UScrime) across Standard Mean Regression (SMR), Locally Adaptive Conformal Prediction (LACP), and Conformalized Quantile Regression (CQR).
+The authors evaluate their framework across synthetic benchmarks (Sobol-Levitan, modified Friedman) and seven diverse real-world benchmarks (e.g., bike, casp, facebook, UScrime) across Standard Mean Regression (SMR), Locally Adaptive Conformal Prediction (LACP), and Conformalized Quantile Regression (CQR)  (Idrissi et al., 2025).
 
 - **Moment vs. Quantile Divergence:** On the modified Friedman benchmark, where mean and heteroskedastic dispersion are explicitly decoupled ($X_6\text{--}X_{10}$ vs. $X_1\text{--}X_5$), LACP and CQR width attributions distinctly isolate the variance-inducing covariates without conflating them with mean drivers. This validates the theoretical premise that quantile-derived uncertainty captures distributional behavior inaccessible to standard moment-based SHAP.
 - **Allocation Sensitivity:** Real-world testing across model classes (LightGBM, Random Forests, Quantile Regressors) demonstrates that Shapley and Proportional Shapley rankings often diverge on complex manifolds (e.g., the facebook dataset). When both allocation schemes align, practitioner confidence in the explanation increases; when they disagree, it reveals non-linear interaction dynamics across coalitions.
