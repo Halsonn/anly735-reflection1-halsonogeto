@@ -1,4 +1,5 @@
 ---
+---
 title: "PAIR Scholarly Reflection #3: Epistemic Bounds and Prediction Trust"
 subtitle: "Deconstructing Predictive Uncertainty in Decision-Critical AI"
 author: "Halson Ogeto Nyaberi"
