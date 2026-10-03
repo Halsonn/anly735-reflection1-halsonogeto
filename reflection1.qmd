@@ -1,83 +1,48 @@
 ---
 ---
-title: "PAIR Scholarly Reflection #3: Epistemic Bounds and Prediction Trust"
-subtitle: "Deconstructing Predictive Uncertainty in Decision-Critical AI"
-author: "Halson Ogeto Nyaberi"
-date: "October 2, 2026"
-format:
-  pdf:
-    documentclass: article
-    geometry:
-      - margin=1in
-    linestretch: 1.15
-    fontsize: 11pt
-  html:
-    theme: cosmo
-    toc: true
-    number-sections: true
-
----
-
-# Introduction
-
-High-stakes machine learning applications routinely treat model outputs as definitive point estimates, collapsing rich posterior distributions into single, actionable values. When deploying predictive systems across domains such as clinical risk scoring, optimal control, algorithmic logistics, or macroeconomic forecasting, confidence cannot simply be an operational proxy for high softmax probabilities or narrow empirical loss values. 
-
-Understanding predictive uncertainty reshapes what it means to trust an individual prediction: trust shifts from a binary judgment of historical accuracy to an active assessment of whether the model understands the limits of its own knowledge space.
-
+title: "PAIR Scholarly Reflection: Unveiling Sources of Predictive Uncertainty"
+format: html
 ---
 
 # Position
 
-The central research problem addressed in this anchor study is the conflation of predictive confidence with true certainty in modern neural architectures. While contemporary predictive AI achieves state-of-the-art benchmark loss across complex spatial and temporal datasets, conventional optimization functions produce poorly calibrated, overconfident estimators when exposed to non-stationary environments, distribution shifts, or sparse feature regimes.
+Conventional Explainable Artificial Intelligence (XAI) operates under a major blind spot: frameworks like SHAP predominantly attribute conditional mean predictions ($\hat{f}(x)$), obscuring the predictive variance, tail risk, and epistemic boundaries inherent to complex models. Il Idrissi et al. (2025) address this deficit by unifying split conformal prediction (SCP) with cooperative game theory to establish a model-agnostic Uncertainty Attribution (UA) framework. Rather than treating uncertainty as an uninspected scalar margin, their approach introduces cooperative games where interval width ($\Delta\hat{C}(x)$) and boundary quantiles ($inf\hat{C}(x), sup\hat{C}(x)$) act as characteristic value functions.
 
-The primary purpose of the work is to operationalize predictive uncertainty quantification (UQ)—principally separating data-inherent noise (**aleatoric uncertainty**) from model-specification gaps and epistemic deficits (**epistemic uncertainty**). 
-
-The paper's core contribution lies in establishing that an individual prediction cannot be validated purely via aggregate holdout metrics (e.g., RMSE, AUC-ROC, or global F1-scores). Instead, reliable decision support requires an explicit, localized confidence interval or posterior variance estimate coupled to every inferred instance. 
-
-In predictive AI, this work is foundational: it formally transitions the definition of model trustworthiness from aggregate historical performance to calibrated instance-level reliability.
-
----
+By expanding attribution beyond egalitarian Shapley values to the broader Harsanyi allocation family—specifically proportional Shapley values—and providing a permutation-based Monte Carlo scheme with asymptotic normality guarantees, this study fundamentally redefines predictive AI trustworthiness. Trust in an individual prediction can no longer be predicated solely on knowing which features drove the point estimate; it requires knowing which features govern the margin of doubt and tail risk.
 
 # Analyze
 
-The authors evaluate predictive uncertainty using post-hoc calibration and ensemble-based approximations (e.g., Deep Ensembles, Monte Carlo Dropout, and Conformal Prediction). Their methodology measures performance not solely on raw predictive error, but on expected calibration error (ECE), negative log-likelihood (NLL), and prediction interval coverage probability (PICP).
+The authors evaluate their framework across synthetic benchmarks (Sobol-Levitan, modified Friedman) and seven diverse real-world benchmarks (e.g., bike, casp, facebook, UScrime) across Standard Mean Regression (SMR), Locally Adaptive Conformal Prediction (LACP), and Conformalized Quantile Regression (CQR).
 
-### Methodological Strengths
-- **Decoupled Error Spaces:** The analytical decomposition of predictive variance allows practitioners to differentiate irreducible measurement noise from out-of-distribution (OOD) novelty.
-- **Empirical Rigor:** The empirical evaluations confirm that ensemble variance tracks structural residual spikes more effectively than conventional single-point approximations, providing an intuitive, interpretable signal for human decision-makers.
+- **Moment vs. Quantile Divergence:** On the modified Friedman benchmark, where mean and heteroskedastic dispersion are explicitly decoupled ($X_6\text{--}X_{10}$ vs. $X_1\text{--}X_5$), LACP and CQR width attributions distinctly isolate the variance-inducing covariates without conflating them with mean drivers. This validates the theoretical premise that quantile-derived uncertainty captures distributional behavior inaccessible to standard moment-based SHAP.
+- **Allocation Sensitivity:** Real-world testing across model classes (LightGBM, Random Forests, Quantile Regressors) demonstrates that Shapley and Proportional Shapley rankings often diverge on complex manifolds (e.g., the facebook dataset). When both allocation schemes align, practitioner confidence in the explanation increases; when they disagree, it reveals non-linear interaction dynamics across coalitions.
+- **Computational Feasibility:** The permutation-based Monte Carlo estimator achieves asymptotic normality and consistent convergence with model evaluations scaling well below the worst-case $m \times d$ bound, demonstrating empirical speedups exceeding an order of magnitude.
 
-### Methodological Gaps
-The empirical evidence partially diverges from the authors' strongest theoretical assertions:
-1. **Computational Overhead vs. Practical Feasibility:** Monte Carlo approximations and deep ensembling introduce linear computational penalties during inference, making real-time deployment in latency-sensitive pipelines questionable.
-2. **Pathological Calibration in Extremes:** While the aggregate calibration (ECE) improves, localized tail-risk predictions remain volatile. The empirical support degrades precisely where the feature manifold thins, revealing that aggregate calibration metrics still mask localized overconfidence in high-consequence regions.
-
----
+The evidence rigorously supports the authors' conclusion: uncertainty attribution behaves fundamentally differently from point-prediction attribution, providing a necessary, orthogonal diagnostic for auditing predictive reliability.
 
 # Interrogate
 
-Applying the **Prediction Trust Audit Lens**, the paper’s primary vulnerability lies in its implicit stationarity assumption: that calibrated uncertainties observed over validation manifolds will faithfully bound errors under real-world covariate and concept shifts.
+A critical methodological vulnerability lies in the framework’s handling of feature dependence and model retraining. The exact and Monte Carlo formulations require retraining sub-models $\hat{f}_A$ and calibrating score sets $\mathcal{S}_A$ across feature coalitions $A \in \mathcal{P}_D$.
 
-| Audit Dimension | Core Assumption / Vulnerability | Predictive Risk |
-| :--- | :--- | :--- |
-| **Statistical Validity** | Residual distributions satisfy exchangeability or stable Gaussian assumptions. | Under heavy-tailed or heteroscedastic noise regimes, uncertainty intervals underestimate catastrophic tail errors. |
-| **Epistemic Boundaries** | Low variance across an ensemble implies certainty in the prediction. | If all models share inductive architecture biases, ensemble unanimity reflects collective blindness rather than true ground-truth confidence. |
-| **Ethical & Operational Safety** | Decision-makers interpret wider intervals as actionable warnings to defer judgment. | In practice, uncalibrated operational thresholds lead operators to ignore diffuse bounds or over-rely on brittle point predictions. |
-
-Predictive AI systems cannot decouple mathematical calibration from systemic domain shifts. A system claiming $95\%$ nominal coverage fails the trust test if the structural dynamics generating the input covariates undergo an abrupt regime change that invalidates the underlying probabilistic bounds.
-
----
+- **Exchangeability and Off-Manifold Extrapolation:** Conformal prediction guarantees finite-sample marginal coverage under the strict assumption that calibration and test instances are exchangeable. However, dropping subsets of correlated features during sub-model evaluation alters conditional data geometry. Fitting arbitrary sub-models on marginal projections can distort residual error distributions, inducing uncalibrated conformity scores on out-of-distribution manifolds.
+- **Absence of Monotonicity:** As the authors note, nested conformal prediction sets lack monotonicity guarantees ($A \subset B \not\Rightarrow v_{\omega CP}(A) \le v_{\omega CP}(B)$). Consequently, normalized attributions can yield counter-intuitive negative contributions to prediction interval width, meaning the addition of informative features can paradoxically inflate interval widths due to finite-sample calibration variance rather than underlying aleatoric noise.
+- **Operational Threats to Trust:** In regulated settings (e.g., credit underwriting or clinical risk), presenting end-users with negative uncertainty attributions or highly divergent rankings between Shapley and P-Shapley allocations risks explanation gaming and stakeholder confusion, weakening procedural accountability.
 
 # Reimagine
 
-To turn these limitations into actionable research, future work should move beyond unconstrained post-hoc statistical calibration and integrate **Physics-Informed, Operator-Theoretic Uncertainty Bounds** into the predictive architecture.
+To address feature entanglement without combinatorial retraining, future work should develop an In-Manifold Masked Conformal Uncertainty Attribution framework.
 
-### Proposed Study Architecture: Dynamically Constrained Conformal Ensembles
-1. **Structural Inductive Priors:** Rather than treating prediction as an unconstrained regression task, incorporate conservation laws, governing system differential operators, or invariant domain relationships directly into the neural loss landscape.
-2. **Adaptive Conformal Split Calibration:** Implement non-exchangeable, locally-weighted split conformal prediction where the calibration non-conformity score explicitly accounts for temporal and spatial autocorrelation.
-3. **Automated Deferral Mechanisms:** Design an optimal control rejection policy. When the decomposed epistemic uncertainty surpasses an empirical threshold $\tau_{\text{epistemic}}$, the system halts autonomous execution, logging the anomalous vector to an active-learning buffer for expert triage.
-
-By constraining predictive uncertainty with physical or structural invariants, this extension ensures that even when data is sparse, the system's confidence estimates remain bounded by first principles rather than speculative statistical extrapolation.
-
----
+- **Methodological Extension:** Instead of retraining $2^d$ separate estimators on sub-vectors $X_A$, deploy conditional generative diffusion or masked autoencoders to marginalize out excluded features $D \setminus A$ while preserving the joint observational manifold $P(X)$.
+- **Surrogate Amortization:** Combine this with an amortized actor-critic network (extending FastSHAP principles) trained to predict the conformal quantile boundaries directly for any arbitrary coalition mask.
+- **Validation Protocol:** Evaluate this pipeline against Il Idrissi et al.’s exact retrained baseline across high-dimensional tabular datasets exhibiting severe multicollinearity (e.g., spatial gene expression or macroeconomic time series).
+- **Target Knowledge:** This extension would establish whether conditional in-manifold imputation eliminates spurious negative allocations, mitigates exchangeability degradation during calibration, and enables real-time uncertainty explanations suitable for live operational pipelines.
 
 # References
+
+Il Idrissi, M., Fernandes Machado, A., Gallic, E., & Charpentier, A. (2025). Unveil sources of uncertainty: Feature contribution to conformal prediction intervals. arXiv preprint arXiv:2505.13118v1.
+
+Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems, 30, 4765–4774.
+
+Romano, Y., Patterson, E., & Candès, E. (2019). Conformalized quantile regression. Advances in Neural Information Processing Systems, 32, 3543–3553.
+
+Shafer, G., & Vovk, V. (2008). A tutorial on conformal prediction. Journal of Machine Learning Research, 9, 371–421.
