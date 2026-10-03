@@ -1,0 +1,67 @@
+---
+---
+title: "PAIR Scholarly Reflection #3"
+subtitle: "Deconstructing Predictive Uncertainty and Individual Trust"
+author: "Halson Ogeto Nyaberi"
+date: "October 2, 2026"
+format:
+  html:
+    toc: true
+    number-sections: true
+    theme: cosmo
+    code-fold: true
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+---
+
+# Position
+
+Conventional Explainable Artificial Intelligence (XAI) frameworks—most notably SHAP—operate under a critical limitation: they decompose conditional mean expectations ($\hat{f}(x)$), largely ignoring model variance, tail risk, and epistemic boundaries[cite: 1, 4, 18]. When evaluating high-stakes decision workflows (e.g., healthcare diagnostics, recidivism estimation, credit underwriting), knowing why a model selected a single point value is insufficient to assess whether that output is dependable[cite: 1, 2]. 
+
+@ilidrissi2025unveil address this disconnect by bridging split conformal prediction (SCP) with cooperative game theory to establish a model-agnostic Uncertainty Attribution (UA) framework[cite: 1, 4]. Instead of treating predictive intervals as uninspected scalar margins, their approach formulates cooperative games whose characteristic value functions directly reflect interval properties:
+
+* **Prediction Interval Width:** $v_{wCP}(A, x) := \Delta\hat{C}_A(x^{(A)})$[cite: 5]
+* **Lower Bound:** $v_{lowCP}(A, x) := \inf \hat{C}_A(x^{(A)})$[cite: 5]
+* **Upper Bound:** $v_{upCP}(A, x) := \sup \hat{C}_A(x^{(A)})$[cite: 5]
+
+The central contribution of the study is twofold: generalizing beyond standard Shapley values to the broader class of Harsanyi allocations (specifically proportional Shapley values) and providing an efficient Monte Carlo permutation-sampling scheme backed by asymptotic normality guarantees[cite: 1, 4, 6, 24]. 
+
+This work fundamentally recalibrates trustworthy predictive AI: **individual prediction trust shifts from a reliance on the feature drivers of a point estimate to a verified understanding of which inputs govern the margin of error and boundary risks**[cite: 1, 2, 4].
+
+# Analyze
+
+The authors assess their framework across synthetic settings (Sobol-Levitan and modified Friedman benchmarks) and seven real-world datasets spanning diverse dimensionalities and sample sizes (e.g., *bike*, *casp*, *concrete*, *facebook*, *UScrime*)[cite: 7, 8, 9, 10, 26]. The empirical evidence provides compelling support for their primary theoretical claims:
+
+* **Decoupling Moments from Quantiles:** On the modified Friedman benchmark—where conditional mean ($X_6\text{--}X_{10}$) and conditional variance ($X_1\text{--}X_5$) are driven by disjoint sets of covariates—interval width attributions via Locally Adaptive Conformal Prediction (LACP) and Conformalized Quantile Regression (CQR) correctly isolate dispersion drivers without mistaking them for mean effectors[cite: 8]. This empirically proves that quantile-based conformal attribution captures structural dispersion inaccessible to standard moment-based SHAP[cite: 8, 10].
+* **Sensitivity to Allocation Norms:** Evaluated across LightGBM, Random Forests, and Quantile Regressors, Shapley and Proportional Shapley (P-Shapley) values yield divergent rankings on complex real manifolds such as the *facebook* dataset[cite: 8, 9, 10]. Concordance between allocations acts as an indicator of explanatory stability, while divergence highlights coalition dividend dynamics that egalitarian Shapley values flatten[cite: 4, 5, 10].
+* **Computational Guarantees:** The permutation-based Monte Carlo sampling scheme achieves empirical convergence to exact values with model evaluations scaling significantly below the theoretical $m \times d$ ceiling, delivering order-of-magnitude wall-clock speedups[cite: 6, 7, 24].
+
+The authors' experimental pipeline successfully demonstrates that uncertainty attribution is orthogonal to point attribution, offering an indispensable diagnostic layer for validating model predictions[cite: 1, 8, 10].
+
+# Interrogate
+
+Applying the **Prediction Trust Audit** reveals key methodological tensions and validity boundaries in the proposed setup:
+
+* **Sub-model Retraining and Exchangeability Violations:** Both the exact (Algorithm 1) and Monte Carlo (Algorithm 2) procedures require retraining models $\hat{f}_A$ and computing calibration scores $\mathcal{S}_A$ across feature subsets $A \subseteq D$[cite: 5, 6]. Conformal validity relies strictly on the exchangeability of calibration and test data[cite: 3]. Projecting data onto lower-dimensional subspaces $X^{(A)}$ alters the correlation structure and residual behavior, potentially violating exchangeability across sub-coalitions when variables are highly correlated[cite: 3, 5, 6].
+* **Non-Monotonicity and Negative Allocations:** Unlike probability measures, conformal intervals for nested sub-models are not monotonic: adding features does not guarantee a narrower interval ($A \subset B \not\Rightarrow v_{\omega CP}(A) \le v_{\omega CP}(B)$)[cite: 5]. Normalizing allocations against baseline empty sets can consequently generate negative contributions to interval width, implying that including informative features could paradoxically expand predictive uncertainty due to finite-sample calibration variance[cite: 5].
+* **Operational and Regulatory Friction:** In high-stakes settings (e.g., healthcare or lending), presenting end-users or compliance auditors with divergent Shapley vs. P-Shapley rankings or counter-intuitive negative uncertainty attributions can compromise procedural trust, increasing the risk of misinterpretation[cite: 1, 5, 10].
+
+# Reimagine
+
+To resolve the combinatorial burden and manifold disruptions caused by retraining sub-models, future work should develop an **In-Manifold Masked Conformal Uncertainty Attribution** framework:
+
+1. **In-Manifold Masked Ensembles:** Rather than refitting $2^d$ distinct models on marginal projections $\mathcal{D}_A$, train a single backbone conditioned on feature inclusion masks, paired with conditional generative diffusion or masked autoencoders to integrate over missing features $D \setminus A$ within the empirical data manifold[cite: 3, 5, 6].
+2. **Amortized Quantile Surrogates:** Train an amortized surrogate network—extending FastSHAP principles to conformal value functions—to predict the calibrated quantile intervals directly for any coalition vector, eliminating the need to re-evaluate conformity scores over permutations[cite: 6, 10, 13].
+3. **Hypothesis and Empirical Verification:** Test this architecture on high-dimensional clinical and spatial datasets against Il Idrissi et al.'s exact retrained baseline[cite: 8, 26]. 
+
+This extension would directly assess whether in-manifold imputation eliminates spurious negative allocations, preserves conformal exchangeability guarantees, and reduces computational latency to millisecond intervals required for production deployment[cite: 3, 5, 6].
+
+# References
+
+
+
+
+
+

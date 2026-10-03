@@ -1,0 +1,5 @@
+evaluation_design,model,rmse,mae
+Temporally Structured,Ridge Regression,110.95299464932569,78.61050070714252
+Temporally Structured,Random Forest Regressor,85.34221257477994,53.674701471012405
+Random Split,Ridge Regression,84.71336611681029,57.18377213691797
+Random Split,Random Forest Regressor,58.81053075504119,36.35295356215749
