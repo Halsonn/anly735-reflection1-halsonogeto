@@ -1,5 +1,4 @@
 ---
----
 title: "PAIR Scholarly Reflection: Unveil Sources of Uncertainty: Feature Contribution to Conformal
 Prediction Interval"
 author: "Halson Ogeto Nyaberi"
@@ -8,9 +7,9 @@ date: today
 
 # Position
 
-Conventional Explainable Artificial Intelligence (XAI) operates under a major blind spot: frameworks like SHAP predominantly attribute conditional mean predictions ($\hat{f}(x)$), obscuring the predictive variance, tail risk, and epistemic boundaries inherent to complex models. Il Idrissi et al. (2025) address this deficit by unifying split conformal prediction (SCP) with cooperative game theory to establish a model-agnostic Uncertainty Attribution (UA) framework. Rather than treating uncertainty as an uninspected scalar margin, their approach introduces cooperative games where interval width ($\Delta\hat{C}(x)$) and boundary quantiles ($inf\hat{C}(x), sup\hat{C}(x)$) act as characteristic value functions.
+Conventional Explainable Artificial Intelligence (XAI) operates under a major blind spot: frameworks like SHAP predominantly attribute conditional mean predictions ($\hat{f}(x)$), obscuring the predictive variance, tail risk, and epistemic boundaries inherent to complex models. Idrissi et al. (2025) address this deficit by unifying split conformal prediction (SCP) with cooperative game theory to establish a model-agnostic Uncertainty Attribution (UA) framework. Rather than treating uncertainty as an uninspected scalar margin, their approach introduces cooperative games where interval width ($\Delta\hat{C}(x)$) and boundary quantiles ($inf\hat{C}(x), sup\hat{C}(x)$) act as characteristic value functions.
 
-By expanding attribution beyond egalitarian Shapley values to the broader Harsanyi allocation family—specifically proportional Shapley values—and providing a permutation-based Monte Carlo scheme with asymptotic normality guarantees, this study fundamentally redefines predictive AI trustworthiness. Trust in an individual prediction can no longer be predicated solely on knowing which features drove the point estimate; it requires knowing which features govern the margin of doubt and tail risk.
+By expanding attribution beyond egalitarian Shapley values to the broader Harsanyi allocation family—specifically proportional Shapley values—and providing a permutation-based Monte Carlo scheme with asymptotic normality guarantees, this study fundamentally redefines predictive AI trustworthiness. Trust in an individual prediction can no longer be predicated solely on knowing which features drove the point estimate; it requires knowing which features govern the margin of doubt and tail risk (Idrissi et al., 2025).
 
 # Analyze
 
@@ -39,12 +38,6 @@ To address feature entanglement without combinatorial retraining, future work sh
 - **Validation Protocol:** Evaluate this pipeline against Il Idrissi et al.’s exact retrained baseline across high-dimensional tabular datasets exhibiting severe multicollinearity (e.g., spatial gene expression or macroeconomic time series).
 - **Target Knowledge:** This extension would establish whether conditional in-manifold imputation eliminates spurious negative allocations, mitigates exchangeability degradation during calibration, and enables real-time uncertainty explanations suitable for live operational pipelines.
 
-# References
+# Reference
 
 Idrissi, M. I., Machado, A. F., Gallic, E., & Charpentier, A. (2025). Unveil sources of uncertainty: Feature contribution to conformal prediction intervals. arXiv preprint arXiv:2505.13118.
-
-Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems, 30, 4765–4774.
-
-Romano, Y., Patterson, E., & Candès, E. (2019). Conformalized quantile regression. Advances in Neural Information Processing Systems, 32, 3543–3553.
-
-Shafer, G., & Vovk, V. (2008). A tutorial on conformal prediction. Journal of Machine Learning Research, 9, 371–421.
